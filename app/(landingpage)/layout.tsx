@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "@/src/theme";
+import Providers from "../providers";
+import "../globals.css";
+
+import Navigation from "@/components/Navigation/Navigation";
+import Footer from "@/components/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Delicateria Manila",
@@ -16,8 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body>{children}</body>
-    </html>
+    <div>
+      <AppRouterCacheProvider>
+        <ThemeProvider theme={theme}>
+          <Providers>
+            <Navigation />
+            {children}
+            <Footer />
+          </Providers>
+        </ThemeProvider>
+      </AppRouterCacheProvider>
+    </div>
   );
 }
