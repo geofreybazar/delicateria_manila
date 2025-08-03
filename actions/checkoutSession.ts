@@ -8,7 +8,7 @@ import {
 
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? "https://geoandmebridalbackend.onrender.com/checkoutsession_api/"
+    ? "https://delicateriamanilabackend.onrender.com/checkoutsession_api/"
     : "http://localhost:3005/checkoutsession_api/";
 
 export async function CreateCheckoutSession(

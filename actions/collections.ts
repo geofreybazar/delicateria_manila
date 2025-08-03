@@ -4,7 +4,7 @@ import { ReturnedCollections } from "@/lib/types/colletions";
 
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? "https://geoandmebridalbackend.onrender.com"
+    ? "https://delicateriamanilabackend.onrender.com"
     : "http://localhost:3005";
 
 export async function GetCollections(): Promise<ReturnedCollections[]> {

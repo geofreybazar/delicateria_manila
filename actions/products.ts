@@ -4,7 +4,7 @@ import { ReturnedProducts, Products } from "@/lib/types/products";
 
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? "https://geoandmebridalbackend.onrender.com"
+    ? "https://delicateriamanilabackend.onrender.com"
     : "http://localhost:3005";
 
 export async function GetProducts(

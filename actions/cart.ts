@@ -4,7 +4,7 @@ import { AddItem, ReturnedCart } from "@/lib/types/cart";
 
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? "https://geoandmebridalbackend.onrender.com/cart_api/"
+    ? "https://delicateriamanilabackend.onrender.com/cart_api/"
     : "http://localhost:3005/cart_api/";
 
 export const AddToCart = async (productId: string): Promise<ReturnedCart> => {
