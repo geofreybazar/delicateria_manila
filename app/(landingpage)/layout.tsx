@@ -7,6 +7,9 @@ import "../globals.css";
 
 import Navigation from "@/components/Navigation/Navigation";
 import Footer from "@/components/Footer/Footer";
+import NextAuthProvider from "@/providers/NextAuthProvider";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Delicateria Manila",
@@ -17,13 +20,15 @@ export const metadata: Metadata = {
   authors: [{ name: "Geofrey R Bazar" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
   return (
-    <div>
+    <NextAuthProvider session={session}>
       <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
           <Providers>
@@ -33,6 +38,6 @@ export default function RootLayout({
           </Providers>
         </ThemeProvider>
       </AppRouterCacheProvider>
-    </div>
+    </NextAuthProvider>
   );
 }

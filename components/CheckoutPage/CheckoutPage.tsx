@@ -59,6 +59,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ session }) => {
       shippingFee,
       items: session.items,
       sessionId: session.id,
+      cartId: session.cartId,
     };
 
     try {

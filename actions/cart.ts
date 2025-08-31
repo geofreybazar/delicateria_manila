@@ -1,6 +1,10 @@
 "use client";
 
-import { AddItem, ReturnedCart } from "@/lib/types/cart";
+import {
+  AddItem,
+  ClientUserAddToCartType,
+  ReturnedCart,
+} from "@/lib/types/cart";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -26,18 +30,42 @@ export const AddToCart = async (productId: string): Promise<ReturnedCart> => {
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;
   }
 };
 
-export const GetCart = async (
-  productId: string | null
-): Promise<ReturnedCart> => {
+export const ClientUserAddToCart = async (body: ClientUserAddToCartType) => {
   try {
-    const response = await fetch(`${API_URL}${productId}`, {
+    const response = await fetch(`${API_URL}createclientusercart`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      const errorMessage =
+        errorBody?.error || response.statusText || "Unknown server error";
+
+      console.error("API fetch failed:", response.status, response.statusText);
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching checkout session:", error);
+    throw error;
+  }
+};
+
+export const GetCart = async (cartId: string | null): Promise<ReturnedCart> => {
+  try {
+    const response = await fetch(`${API_URL}${cartId}`, {
       method: "GET",
     });
 
@@ -49,7 +77,7 @@ export const GetCart = async (
       console.error("API fetch failed:", response.status, response.statusText);
       throw new Error(errorMessage);
     }
-    const data = response.json();
+    const data = await response.json();
 
     return data;
   } catch (error) {
@@ -77,7 +105,7 @@ export const AddItemToCart = async (data: AddItem) => {
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;
@@ -103,7 +131,7 @@ export const AddQuantity = async (data: AddItem) => {
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;
@@ -129,7 +157,7 @@ export const MinusQuantity = async (data: AddItem) => {
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;
@@ -155,7 +183,7 @@ export const RemoveItem = async (data: AddItem) => {
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;

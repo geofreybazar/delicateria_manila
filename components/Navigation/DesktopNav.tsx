@@ -1,16 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { useCartStore } from "@/lib/store/cartStore";
-
 import ShopNowButton from "../Buttons/ShopNowButton";
+import LoginUpButton from "../Buttons/LoginUpButton";
 import logo from "@/assets/HomePage/logo.png";
 
-import { IoPerson } from "react-icons/io5";
-import { PiShoppingCartSimpleFill } from "react-icons/pi";
-import { Badge, Drawer } from "@mui/material";
+import { Drawer } from "@mui/material";
 import SideCart from "../Cart/SideCart";
 import { useSideCartStore } from "@/lib/store/sideCartStore";
+
+import ShopIcon from "./ShopIcon";
 
 interface Links {
   link: string;
@@ -23,11 +22,6 @@ interface DesktopNavProps {
 }
 
 const DesktopNav: React.FC<DesktopNavProps> = ({ LINKS, pathname }) => {
-  const cartItems = useCartStore((state) => state.items);
-  const totalItems = cartItems.items.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
   const open = useSideCartStore((state) => state.open);
   const setOpen = useSideCartStore((state) => state.setOpen);
 
@@ -61,20 +55,8 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ LINKS, pathname }) => {
 
       <div className='flex items-center text-3xl gap-5'>
         <ShopNowButton />
-        {totalItems > 0 ? (
-          <Badge
-            badgeContent={totalItems}
-            color='customorange'
-            className='cursor-pointer'
-            onClick={() => handleOpenCart()}
-          >
-            <PiShoppingCartSimpleFill />
-          </Badge>
-        ) : (
-          <PiShoppingCartSimpleFill />
-        )}
-
-        <IoPerson />
+        <ShopIcon handleOpenCart={handleOpenCart} />
+        <LoginUpButton />
       </div>
 
       <Drawer anchor='right' open={open} onClose={() => setOpen(false)}>

@@ -18,16 +18,11 @@ const ProductsList: React.FC<ProductsListProps> = ({ products }) => {
   const handleOpenCart = () => setOpen(true);
   return (
     <div className='grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-5'>
-      {products.map((product) => {
-        if (product.stockQuantity <= 0) {
-          return <div key={product.id}>No stock</div>;
-        }
-        return (
-          <div key={product.id}>
-            <ImageComponent product={product} handleOpenCart={handleOpenCart} />
-          </div>
-        );
-      })}
+      {products.map((product) => (
+        <div key={product.id}>
+          <ImageComponent product={product} handleOpenCart={handleOpenCart} />
+        </div>
+      ))}
 
       <Drawer anchor='right' open={open} onClose={() => setOpen(false)}>
         <SideCart />

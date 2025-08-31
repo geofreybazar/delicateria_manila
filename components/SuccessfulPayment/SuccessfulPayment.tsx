@@ -10,7 +10,7 @@ const SuccessfulPayment = ({ id }: { id: string }) => {
   const router = useRouter();
 
   useEffect(() => {
-    localStorage.removeItem("cart-storage");
+    localStorage.removeItem("cartId");
   }, []);
 
   return (

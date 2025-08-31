@@ -40,7 +40,7 @@ export async function GetProducts(
       };
     }
 
-    return data.json();
+    return await data.json();
   } catch (error) {
     console.error("Error fetching products:", error);
     return {
@@ -64,7 +64,7 @@ export async function GetFeaturedProducts(): Promise<Products[]> {
       return [];
     }
 
-    return data.json();
+    return await data.json();
   } catch (error) {
     console.error("Error fetching featured products:", error);
     return [];

@@ -19,7 +19,7 @@ export async function GetCollections(): Promise<ReturnedCollections[]> {
       return [];
     }
 
-    return data.json();
+    return await data.json();
   } catch (error) {
     console.error("Error fetching collections:", error);
     return [];
@@ -41,7 +41,7 @@ export async function GetCollectionName(id: string) {
       return [];
     }
 
-    return data.json();
+    return await data.json();
   } catch (error) {
     console.error("Error fetching collections name:", error);
     return [];

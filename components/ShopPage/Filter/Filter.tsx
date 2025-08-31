@@ -45,7 +45,7 @@ const Filter: React.FC<FilterProps> = ({ collections }) => {
   }));
 
   return (
-    <div className='pr-5 w-1/6'>
+    <div className='pr-5'>
       <div className='flex flex-col'>
         <div
           className='cursor-pointer flex items-center justify-between border-b border-gray-400'

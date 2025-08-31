@@ -32,7 +32,7 @@ export async function CreateCheckoutSession(
       throw new Error(errorMessage);
     }
 
-    return response.json();
+    return await response.json();
   } catch (error: any) {
     console.error("Error creating checkout session:", error);
 
@@ -54,7 +54,7 @@ export const GetCheckoutSession = async (
       throw new Error("Failed to fetch checkout session");
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;
@@ -78,7 +78,7 @@ export const CreatePaymentRequest = async (data: OrderInput) => {
       console.error("API fetch failed:", response.status, response.statusText);
       throw new Error(errorMessage);
     }
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching checkout session:", error);
     throw error;

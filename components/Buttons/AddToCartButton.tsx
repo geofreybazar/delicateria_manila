@@ -1,13 +1,11 @@
 "use client";
 
-import { AddToCart } from "@/actions/cart";
+import { useSession } from "next-auth/react";
 
+import { AddToCart, ClientUserAddToCart } from "@/actions/cart";
 import { Button } from "@mui/material";
-
 import { Products } from "@/lib/types/products";
-
 import { AddItemToCart } from "@/actions/cart";
-
 import { useQueryClient } from "@tanstack/react-query";
 
 type SizeType = "small" | "medium" | "large" | undefined;
@@ -23,39 +21,54 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   product,
   size,
 }) => {
+  const { data: session } = useSession();
   const queryClient = useQueryClient();
 
   const handleAddToCart = async () => {
-    const cartId = localStorage.getItem("cartId");
-    if (cartId) {
-      try {
-        const data = {
-          cartId,
-          productId: product.id,
-        };
-        await AddItemToCart(data);
-        await queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const newCart = await AddToCart(product.id);
+    if (session) {
+      const data = {
+        userId: session.user.id,
+        productId: product.id,
+      };
+      await ClientUserAddToCart(data);
+      await queryClient.invalidateQueries({
+        queryKey: ["cart", session.user.id],
+      });
 
-        localStorage.setItem("cartId", newCart.id);
-      } catch (error) {
-        console.log(error);
+      handleOpenCart();
+      return;
+    } else {
+      const cartId = localStorage.getItem("cartId");
+      if (cartId) {
+        try {
+          const data = {
+            cartId,
+            productId: product.id,
+          };
+          await AddItemToCart(data);
+          await queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const newCart = await AddToCart(product.id);
+          localStorage.setItem("cartId", newCart.id);
+          window.dispatchEvent(new Event("storage"));
+        } catch (error) {
+          console.log(error);
+        }
       }
+      handleOpenCart();
+      return;
     }
-    handleOpenCart();
-    return;
   };
 
   return (
     <Button
       onClick={handleAddToCart}
       color='customorange'
-      variant='outlined'
+      variant='contained'
       loadingPosition='start'
       size={size}
     >

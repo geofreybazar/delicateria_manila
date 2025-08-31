@@ -19,7 +19,7 @@ const ProductsItems: React.FC<ProductsItemsProps> = async ({
   const products = await GetProducts(filters, page);
 
   return (
-    <div className='flex-1 w-5/6'>
+    <div className='flex-1'>
       <div className='flex flex-wrap items-center gap-2 text-gray-500 mb-5 overflow-x-auto'>
         {filterNames.length > 0 && (
           <>

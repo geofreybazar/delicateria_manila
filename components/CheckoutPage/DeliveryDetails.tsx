@@ -76,14 +76,6 @@ const DeliveryDetails = () => {
               error={!!errors.postalCode}
               helperText={errors.postalCode?.message}
             />
-            {/* <TextField
-              size='small'
-              label='City'
-              fullWidth
-              {...register("city")}
-              error={!!errors.city}
-              helperText={errors.city?.message}
-            /> */}
           </div>
 
           <FormControl fullWidth error={!!errors.city}>

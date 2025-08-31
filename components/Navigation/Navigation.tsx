@@ -9,13 +9,10 @@ import MobileNav from "./MobileNav";
 const LINKS = [
   { link: "/", text: "Home" },
   { link: "/aboutus", text: "About Us" },
-  { link: "/categories", text: "Categories" },
   { link: "/contactus", text: "Contact Us" },
 ];
 
 const Navigation = () => {
-  // const cartItems = useCartStore((state) => state.items);
-
   const [scroll, setScroll] = useState(false);
   const pathname = usePathname();
 

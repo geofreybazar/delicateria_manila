@@ -20,16 +20,25 @@ export interface ReturnedCart {
   id: string;
   isFreeDelivery: boolean;
   totalPrice: number;
-  items: [
-    {
-      productid: Items;
-      quantity: number;
-      _id: string;
-    },
-  ];
+  items: {
+    productid: Items;
+    quantity: number;
+    _id: string;
+  }[];
 }
 
 export interface AddItem {
-  cartId: string;
+  userId?: string;
+  cartId?: string;
+  productId: string;
+}
+
+export interface GetCartType {
+  cartId?: string;
+  userId?: string;
+}
+
+export interface ClientUserAddToCartType {
+  userId: string;
   productId: string;
 }

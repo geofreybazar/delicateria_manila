@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { GetCollections } from "@/actions/collections";
 import ProductsFallback from "./ProductsItems/ProductsFallback";
 import ProductsItems from "./ProductsItems/ProductsItems";
-import Filter from "./Filter/Filter";
+import ShopLayout from "./ShopLayout";
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
@@ -16,12 +16,13 @@ const Shop = async ({ searchParams }: { searchParams: SearchParams }) => {
 
   const filters = Array.isArray(filter) ? filter : filter ? [filter] : [];
   return (
-    <div className='flex gap-4 w-full'>
-      <Filter collections={collections} />
-      <Suspense fallback={<ProductsFallback />}>
-        <ProductsItems filters={filters} page={page} />
-      </Suspense>
-    </div>
+    <>
+      <ShopLayout collections={collections}>
+        <Suspense fallback={<ProductsFallback />}>
+          <ProductsItems filters={filters} page={page} />
+        </Suspense>
+      </ShopLayout>
+    </>
   );
 };
 

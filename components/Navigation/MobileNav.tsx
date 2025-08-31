@@ -1,10 +1,13 @@
-import { SwipeableDrawer } from "@mui/material";
+import { Button, SwipeableDrawer } from "@mui/material";
 import Link from "next/link";
 import logo from "@/assets/HomePage/logo.png";
 import Image from "next/image";
 import { IoIosMenu } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
+import ShopIcon from "./ShopIcon";
+import { useSideCartStore } from "@/lib/store/sideCartStore";
+import LoginUpButtonMobile from "../Buttons/LoginUpButtonMobile";
 
 interface Links {
   link: string;
@@ -29,9 +32,17 @@ const MobileNav: React.FC<MobileNavProps> = ({ LINKS }) => {
 
       setOnOpen(open);
     };
+
+  const setOpen = useSideCartStore((state) => state.setOpen);
+
+  const handleOpenCart = () => setOpen(true);
   return (
     <div className='lg:hidden w-full px-5'>
       <div className='flex justify-between items-center'>
+        <div className='text-2xl' onClick={toggleDrawer(true)}>
+          <IoIosMenu />
+        </div>
+
         <Link href='/'>
           <Image
             className='h-14 w-auto'
@@ -40,8 +51,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ LINKS }) => {
             priority
           />
         </Link>
-        <div className='text-2xl' onClick={toggleDrawer(true)}>
-          <IoIosMenu />
+        <div className='text-3xl'>
+          <ShopIcon handleOpenCart={handleOpenCart} />
         </div>
       </div>
       <SwipeableDrawer
@@ -74,9 +85,21 @@ const MobileNav: React.FC<MobileNavProps> = ({ LINKS }) => {
               </Link>
             ))}
           </div>
-          <div className='flex flex-col gap-2'>
-            <p>Cart</p>
-            <p>Accoutn</p>
+          <div className='flex flex-col gap-5'>
+            <Link href='/shop'>
+              <Button
+                fullWidth
+                color='customorange'
+                variant='contained'
+                loadingPosition='start'
+                size='large'
+                onClick={toggleDrawer(false)}
+              >
+                Shop
+              </Button>
+            </Link>
+
+            <LoginUpButtonMobile toggleDrawer={toggleDrawer} />
           </div>
         </div>
       </SwipeableDrawer>

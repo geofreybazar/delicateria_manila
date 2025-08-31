@@ -8,32 +8,34 @@ export interface Items {
   imgUrl: string;
 }
 
-interface Images {
-  publicId: string;
-  url: string;
-  _id: string;
-}
+// interface Images {
+//   publicId: string;
+//   url: string;
+//   _id: string;
+// }
 
-interface Product {
-  id: string;
-  category: string;
-  description: string;
-  isOnsale: boolean;
-  name: string;
-  price: number;
-  status: string;
-  stockQuantity: number;
-  images: Images[];
-}
+// export interface Product {
+//   id: string;
+//   category: string;
+//   description: string;
+//   isOnsale: boolean;
+//   name: string;
+//   price: number;
+//   status: string;
+//   stockQuantity: number;
+//   images: Images[];
+// }
 
 interface CartStateItems {
-  _id: string;
+  productid: string;
+  name: string;
   quantity: number;
-  productid: Product;
+  price: number;
+  imgUrl: string;
 }
 
 export type CartState = {
-  guestId: string | null;
+  cartId: string | null;
   items: CartStateItems[];
   totalPrice: number;
   isFreeDelivery: boolean;
@@ -49,8 +51,8 @@ interface itemsToSave {
 }
 
 export interface ReturnedCheckoutSession {
+  cartId: string;
   id: string;
-  guestId: string;
   items: itemsToSave[];
   expiresAt: Date;
   totalPrice: number;

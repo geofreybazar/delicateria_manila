@@ -1,6 +1,5 @@
 import Image from "next/image";
 import AddToCartButton from "@/components/Buttons/AddToCartButton";
-import BuyNowButton from "@/components/Buttons/BuyNowButton";
 
 import { Products } from "@/lib/types/products";
 
@@ -14,7 +13,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   handleOpenCart,
 }) => {
   return (
-    <div className='flex flex-col border border-black shadow-md h-full'>
+    <div className='relative flex flex-col border border-black shadow-md h-full'>
       <div className='relative h-40 md:h-[180px] w-full overflow-hidden'>
         <Image
           src={product.images[0]?.url || "/fallback.jpg"}
@@ -41,9 +40,14 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
             product={product}
             handleOpenCart={handleOpenCart}
           />
-          <BuyNowButton size='small' />
         </div>
       </div>
+
+      {product.stockQuantity <= 0 && (
+        <div className='w-full h-full absolute flex justify-center items-center bg-white/85  z-10'>
+          <p className='font-bold text-customOrange text-xl'>OUT OF STOCK</p>
+        </div>
+      )}
     </div>
   );
 };

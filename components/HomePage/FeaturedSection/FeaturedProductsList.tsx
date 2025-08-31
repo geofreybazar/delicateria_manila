@@ -3,7 +3,6 @@
 import Image from "next/image";
 
 import AddToCartButton from "@/components/Buttons/AddToCartButton";
-import BuyNowButton from "@/components/Buttons/BuyNowButton";
 
 import { Products } from "@/lib/types/products";
 
@@ -46,7 +45,6 @@ const FeaturedProductsList: React.FC<FeaturedProductsListProps> = ({
                 product={product}
                 handleOpenCart={handleOpenCart}
               />
-              <BuyNowButton size='large' />
             </div>
           </div>
           <div className='flex-1 flex flex-col gap-2 justify-between bg-offwhite p-2 md:p-4 font-semibold text-xs md:text-lg'>
@@ -65,7 +63,6 @@ const FeaturedProductsList: React.FC<FeaturedProductsListProps> = ({
                 product={product}
                 handleOpenCart={handleOpenCart}
               />
-              <BuyNowButton size='small' />
             </div>
           </div>
         </div>
