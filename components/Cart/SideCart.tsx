@@ -11,8 +11,7 @@ import useGetCart from "@/hooks/cart/useGetCart";
 import useAddQuantity from "@/hooks/cart/useAddQuantity";
 import useMinusQuantity from "@/hooks/cart/useMinusQuantity";
 import useRemoveItem from "@/hooks/cart/useRemoveItem";
-
-import { CreateCheckoutSession } from "@/actions/checkoutSession";
+import useCreateCheckOutSession from "@/hooks/checkOutSession/useCreateCheckOutSession";
 
 import LoadingCart from "./LoadingCart";
 import EmptyCart from "./EmptyCart";
@@ -31,7 +30,6 @@ const SideCart = () => {
 
   const queryClient = useQueryClient();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const setOpen = useSideCartStore((state) => state.setOpen);
   const [errorMessage, setErrorMessage] = useState("");
   const [cartId, setCartId] = useState<string | null>(null);
@@ -51,6 +49,8 @@ const SideCart = () => {
   const { addQuantity, isPendingAddQuantity } = useAddQuantity();
   const { minusQuantity, isPendingMinusQuantity } = useMinusQuantity();
   const { removeItem, isPendingRemoveItem } = useRemoveItem();
+  const { createCheckout, isPendingCreateCheckout } =
+    useCreateCheckOutSession();
 
   if (!cartId || !cart || cartItemsIsLoading) {
     return <LoadingCart />;
@@ -76,10 +76,8 @@ const SideCart = () => {
       };
     });
 
-    setIsLoading(true);
-
     try {
-      const session = await CreateCheckoutSession({
+      const session = await createCheckout({
         cartId: cart.id,
         items,
         isFreeDelivery: balance <= 0,
@@ -88,7 +86,6 @@ const SideCart = () => {
 
       if (session.message) {
         localStorage.removeItem("cartId");
-        setIsLoading(false);
 
         Swal.fire({
           title: "Cart Session Expired!",
@@ -107,7 +104,6 @@ const SideCart = () => {
           : "Some items are out of stock. Refresh to update";
         setErrorMessage(errorMessage);
 
-        setIsLoading(false);
         return;
       }
 
@@ -115,7 +111,6 @@ const SideCart = () => {
         throw new Error("Failed to create checkout session");
       }
 
-      setIsLoading(false);
       setOpen(false);
       router.push(`/checkout/${session.id}`);
     } catch (error: unknown) {
@@ -126,7 +121,6 @@ const SideCart = () => {
       }
 
       setErrorMessage(errorMessage);
-      setIsLoading(false);
     }
   };
 
@@ -153,7 +147,6 @@ const SideCart = () => {
       }
 
       setErrorMessage(errorMessage);
-      setIsLoading(false);
     }
   };
 
@@ -180,13 +173,12 @@ const SideCart = () => {
       }
 
       setErrorMessage(errorMessage);
-      setIsLoading(false);
     }
   };
 
   const handleRemoveItem = async (productId: string) => {
     const data = {
-      cartId,
+      cartId: cart.id,
       productId,
     };
     try {
@@ -207,7 +199,6 @@ const SideCart = () => {
       }
 
       setErrorMessage(errorMessage);
-      setIsLoading(false);
     }
   };
 
@@ -348,8 +339,8 @@ const SideCart = () => {
               variant='contained'
               color='customorange'
               size='large'
-              loading={isLoading}
-              disabled={isLoading}
+              loading={isPendingCreateCheckout}
+              disabled={isPendingCreateCheckout}
               onClick={handleCreateCheckoutSession}
             >
               Proceed to Checkout ₱
