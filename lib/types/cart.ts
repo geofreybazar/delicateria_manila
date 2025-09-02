@@ -4,7 +4,7 @@ interface Images {
   _id: string;
 }
 
-interface Items {
+export interface Items {
   id: string;
   category: string;
   description: string;

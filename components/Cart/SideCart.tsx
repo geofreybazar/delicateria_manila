@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -12,16 +11,16 @@ import useAddQuantity from "@/hooks/cart/useAddQuantity";
 import useMinusQuantity from "@/hooks/cart/useMinusQuantity";
 import useRemoveItem from "@/hooks/cart/useRemoveItem";
 import useCreateCheckOutSession from "@/hooks/checkOutSession/useCreateCheckOutSession";
-
-import LoadingCart from "./LoadingCart";
-import EmptyCart from "./EmptyCart";
-
 import { useSideCartStore } from "@/lib/store/sideCartStore";
 
-import { Button, LinearProgress } from "@mui/material";
-import { HiMiniMinus, HiMiniPlus } from "react-icons/hi2";
+import LoadingCart from "./LoadingCart";
+import CartItems from "./CartItems";
+import FreeDeliveryProgress from "./FreeDeliveryProgress";
+import EmptyCart from "./EmptyCart";
+import { ReturnedCart } from "@/lib/types/cart";
+
+import { Button } from "@mui/material";
 import { IoMdCloseCircle } from "react-icons/io";
-import { FaTrash } from "react-icons/fa";
 
 const FREEDELIVERYPRICE = 5000;
 
@@ -52,29 +51,29 @@ const SideCart = () => {
   const { createCheckout, isPendingCreateCheckout } =
     useCreateCheckOutSession();
 
+  const updateCartOptimistically = useCallback(
+    (updater: (oldData: ReturnedCart) => ReturnedCart) => {
+      queryClient.setQueryData(["cart", cartId], updater);
+    },
+    [queryClient, cartId]
+  );
+
   if (!cartId || !cart || cartItemsIsLoading) {
     return <LoadingCart />;
   }
 
   const cartItems = cart.items;
 
-  const freeDelivery = Math.min(
-    (cart.totalPrice / FREEDELIVERYPRICE) * 100,
-    100
-  );
-
   const balance = FREEDELIVERYPRICE - cart.totalPrice;
 
   const handleCreateCheckoutSession = async () => {
-    const items = cart.items.map((item) => {
-      return {
-        productid: item.productid.id,
-        name: item.productid.name,
-        quantity: item.quantity,
-        price: item.productid.price,
-        imgUrl: item.productid.images[0]?.url,
-      };
-    });
+    const items = cart?.items.map((item) => ({
+      productid: item.productid.id,
+      name: item.productid.name,
+      quantity: item.quantity,
+      price: item.productid.price,
+      imgUrl: item.productid.images[0]?.url,
+    }));
 
     try {
       const session = await createCheckout({
@@ -125,11 +124,31 @@ const SideCart = () => {
   };
 
   const handleAddQuantity = async (productId: string) => {
-    const data = {
-      cartId: cart.id,
-      productId,
-    };
+    updateCartOptimistically((oldData: ReturnedCart) => {
+      if (!oldData) return oldData;
+
+      // Find the item to get its price for total calculation
+      const itemToUpdate = oldData.items.find(
+        (item) => item.productid.id === productId
+      );
+      if (!itemToUpdate) return oldData; // Safety check
+
+      return {
+        ...oldData,
+        items: oldData.items.map((item) =>
+          item.productid.id === productId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        ),
+        totalPrice: oldData.totalPrice + itemToUpdate.productid.price,
+      };
+    });
+
     try {
+      const data = {
+        cartId: cart.id,
+        productId,
+      };
       const addQuantityFunction = await addQuantity(data);
       await queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
       if (addQuantityFunction.message) {
@@ -151,11 +170,28 @@ const SideCart = () => {
   };
 
   const handleMinusQuantity = async (productId: string) => {
-    const data = {
-      cartId: cart.id,
-      productId,
-    };
+    updateCartOptimistically((oldData: ReturnedCart) => {
+      if (!oldData) return oldData;
+
+      return {
+        ...oldData,
+        items: oldData.items.map((item) =>
+          item.productid.id === productId && item.quantity > 1
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        ),
+        totalPrice:
+          oldData.totalPrice -
+          (oldData.items.find((item) => item.productid.id === productId)
+            ?.productid.price || 0),
+      };
+    });
+
     try {
+      const data = {
+        cartId: cart.id,
+        productId,
+      };
       const minusQuantityFunction = await minusQuantity(data);
       await queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
       if (minusQuantityFunction.message) {
@@ -177,11 +213,29 @@ const SideCart = () => {
   };
 
   const handleRemoveItem = async (productId: string) => {
-    const data = {
-      cartId: cart.id,
-      productId,
-    };
+    updateCartOptimistically((oldData: ReturnedCart) => {
+      if (!oldData) return oldData;
+
+      const itemToRemove = oldData.items.find(
+        (item) => item.productid.id === productId
+      );
+      const priceToSubtract = itemToRemove
+        ? itemToRemove.productid.price * itemToRemove.quantity
+        : 0;
+
+      return {
+        ...oldData,
+        items: oldData.items.filter((item) => item.productid.id !== productId),
+        totalPrice: oldData.totalPrice - priceToSubtract,
+      };
+    });
+
     try {
+      const data = {
+        cartId: cart.id,
+        productId,
+      };
+
       const removeItemFunction = await removeItem(data);
       await queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
       if (removeItemFunction.message) {
@@ -216,104 +270,18 @@ const SideCart = () => {
             />
           </div>
 
-          <div className='p-2 bg-ashBlack text-offwhite flex flex-col gap-2'>
-            <p className='text-lg text-center'>
-              {balance <= 0
-                ? "Congratulations! You have free shipping!"
-                : `You're ₱${new Intl.NumberFormat("en-PH", {
-                    minimumFractionDigits: 2,
-                  }).format(balance)} away from free shipping!`}
-            </p>
-            <LinearProgress
-              variant='determinate'
-              value={freeDelivery}
-              color='customorange'
-            />
-          </div>
+          <FreeDeliveryProgress totalPrice={cart.totalPrice} />
 
           <div className='px-5 text-ashBlack flex-1 flex flex-col gap-4 my-4 overflow-y-auto'>
-            {cartItems.map((item) => (
-              <div
-                key={item._id}
-                className='grid grid-cols-2 sm:grid-cols-[120px_1fr_auto] gap-3 sm:gap-5 p-2 border-gray-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300'
-              >
-                <Image
-                  width={150}
-                  height={100}
-                  sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-                  src={item.productid.images[0].url}
-                  alt={`Product image of ${item.productid.name}`}
-                  className='object-cover rounded-lg '
-                />
-                <div className='w-full flex flex-col'>
-                  <p className='text-lg font-semibold'>{item.productid.name}</p>
-                  <p>
-                    ₱
-                    {new Intl.NumberFormat("en-PH", {
-                      minimumFractionDigits: 2,
-                    }).format(item.productid.price)}
-                  </p>
-                  <div className='w-full flex flex-wrap items-center gap-2 text-lg sm:text-xl'>
-                    <div className='border rounded-md w-fit text-xl flex items-center gap-5'>
-                      <button
-                        onClick={() => handleMinusQuantity(item.productid.id)}
-                        disabled={isPendingMinusQuantity}
-                        className={`rounded ${
-                          isPendingMinusQuantity
-                            ? "px-2 opacity-50 cursor-not-allowed bg-gray-300 "
-                            : "p-2 cursor-pointer hover:bg-gray-100"
-                        }`}
-                      >
-                        {isPendingMinusQuantity ? (
-                          <span className='w-4 h-4 border-2 border border-t-transparent rounded-full animate-spin inline-block' />
-                        ) : (
-                          <HiMiniMinus />
-                        )}
-                      </button>
-
-                      {item.quantity}
-                      <button
-                        onClick={() => handleAddQuantity(item.productid.id)}
-                        disabled={isPendingAddQuantity}
-                        className={`rounded ${
-                          isPendingAddQuantity
-                            ? "px-2 opacity-50 cursor-not-allowed bg-gray-300 "
-                            : "p-2 cursor-pointer hover:bg-gray-100"
-                        }`}
-                      >
-                        {isPendingAddQuantity ? (
-                          <span className='w-4 h-4 border-2 border border-t-transparent rounded-full animate-spin inline-block' />
-                        ) : (
-                          <HiMiniPlus />
-                        )}
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveItem(item.productid.id)}
-                      disabled={isPendingRemoveItem}
-                      className={`rounded-full ml-4 text-red-500 hover:text-red-700 ${
-                        isPendingRemoveItem
-                          ? "px-2 opacity-50 cursor-not-allowed bg-gray-300 "
-                          : "p-2 cursor-pointer hover:bg-gray-100"
-                      }`}
-                    >
-                      {isPendingRemoveItem ? (
-                        <span className='w-4 h-4 border-2 border border-t-transparent rounded-full animate-spin inline-block' />
-                      ) : (
-                        <FaTrash size={20} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-                <div className='block sm:hidden' />
-                <p className='font-semibold text-right self-start min-w-[80px]'>
-                  ₱
-                  {new Intl.NumberFormat("en-PH", {
-                    minimumFractionDigits: 2,
-                  }).format(item.productid.price * item.quantity)}
-                </p>
-              </div>
-            ))}
+            <CartItems
+              cartItems={cartItems}
+              handleMinusQuantity={handleMinusQuantity}
+              isPendingMinusQuantity={isPendingMinusQuantity}
+              handleAddQuantity={handleAddQuantity}
+              isPendingAddQuantity={isPendingAddQuantity}
+              handleRemoveItem={handleRemoveItem}
+              isPendingRemoveItem={isPendingRemoveItem}
+            />
           </div>
 
           <div className='px-5 pb-4 flex flex-col gap-2'>
