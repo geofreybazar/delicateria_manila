@@ -19,16 +19,16 @@ const ViewOrderModal = ({
     );
   }, [order]);
 
-  if (isError || !order) {
+  if (isLoading || !order) {
+    return <OrderLoadingSkeleton />;
+  }
+
+  if (isError) {
     return (
       <div className='p-6 text-center text-red-600'>
         Something went wrong. Please try again.
       </div>
     );
-  }
-
-  if (isLoading) {
-    return <OrderLoadingSkeleton />;
   }
 
   const getStatusColor = (status: string) => {
