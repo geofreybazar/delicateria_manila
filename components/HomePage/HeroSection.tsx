@@ -1,8 +1,12 @@
 import ShopNowButton from "../Buttons/ShopNowButton";
 import SignUpNowButton from "../Buttons/SignUpNowButton";
 import { title, paragraph } from "@/lib/fonts/fonts";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const HeroSection = () => {
+const HeroSection = async () => {
+  const session = await getServerSession(authOptions);
+
   return (
     <div className='w-full h-screen bg-hero flex items-center'>
       <div className='flex flex-col gap-4 justify-center text-offwhite mx-4 md:mx-12 xl:mx-36 2xl:mx-52'>
@@ -18,8 +22,9 @@ const HeroSection = () => {
           experience. From succulent steaks to artisanal sausages, we bring the
           best of gourmet flavours to your table.
         </p>
-        <div className='w-full flex justify-center lg:block gap-3'>
-          <ShopNowButton /> <SignUpNowButton />
+        <div className='w-full flex gap-5 justify-center xl:justify-start'>
+          <ShopNowButton />
+          {!session && <SignUpNowButton />}
         </div>
       </div>
     </div>

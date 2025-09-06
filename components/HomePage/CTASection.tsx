@@ -2,8 +2,11 @@ import { paragraph } from "@/lib/fonts/fonts";
 import React from "react";
 import ShopNowButton from "../Buttons/ShopNowButton";
 import SignUpNowButton from "../Buttons/SignUpNowButton";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const CTASection = () => {
+const CTASection = async () => {
+  const session = await getServerSession(authOptions);
   return (
     <div className='w-full bg-offwhite'>
       <div className='flex flex-col lg:flex-row gap-5 justify-between items-center text-ashBlack mx-4 md:mx-12 xl:mx-36 2xl:mx-52 py-30'>
@@ -18,7 +21,8 @@ const CTASection = () => {
           </p>
         </div>
         <div className='flex gap-5'>
-          <ShopNowButton /> <SignUpNowButton />
+          <ShopNowButton />
+          <div>{!session && <SignUpNowButton />}</div>
         </div>
       </div>
     </div>

@@ -115,6 +115,12 @@ const DeliveryDetails = () => {
             label='Phone Number'
             fullWidth
             {...register("phoneNumber")}
+            onBlur={(e) => {
+              const val = e.target.value;
+              if (val.startsWith("0")) {
+                e.target.value = val.slice(1);
+              }
+            }}
             error={!!errors.phoneNumber}
             helperText={errors.phoneNumber?.message}
           />

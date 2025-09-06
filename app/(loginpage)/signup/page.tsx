@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import SignupPage from "@/components/SignupPage/SignupPage";
+import LoadingFallback from "@/components/SignupPage/LoadingFallback";
 
 const page = () => {
   return (
-    <div className='bg-off-white flex flex-col'>
-      <Suspense fallback={<div>Loading</div>}>
+    <div className='h-full'>
+      <Suspense fallback={<LoadingFallback />}>
         <SignupPage />
       </Suspense>
     </div>

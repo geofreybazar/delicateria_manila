@@ -9,9 +9,16 @@ export const deliveryDetailsSchema = z.object({
   city: z.string().min(1, "City is required"),
   phoneNumber: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number must be at most 15 digits")
-    .regex(/^[0-9]+$/, "Phone number must contain only numbers"),
+    .transform((val) => (val.startsWith("0") ? val.slice(1) : val))
+    .refine((val) => /^[0-9]+$/.test(val), {
+      message: "Phone number must contain only numbers",
+    })
+    .refine((val) => val.length >= 9, {
+      message: "Phone number must be at least 9 digits",
+    })
+    .refine((val) => val.length <= 15, {
+      message: "Phone number must be at most 15 digits",
+    }),
 });
 
 export type DeliveryDetailsType = z.infer<typeof deliveryDetailsSchema>;

@@ -1,64 +1,53 @@
+"use client";
+
+import { useState } from "react";
+import { Box, Modal } from "@mui/material";
+import { MdOutlineClose } from "react-icons/md";
+
+import OrdersList from "./OrdersList";
 import { Orders } from "@/lib/types/auth";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import ViewOrderModal from "./ViewOrderModal";
+import { viewOrderModalStyle } from "@/lib/variables/order";
 
 const OrdersTable = ({ orders }: { orders: Orders[] }) => {
+  const [openViewDetails, setOpenViewDetails] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<null | string>(null);
+  const handleCloseViewDetails = () => setOpenViewDetails(false);
+  const handleOpenViewDetails = (id: string) => {
+    setSelectedOrder(id);
+    setOpenViewDetails(true);
+  };
+
   return (
-    <TableContainer component={Paper} className='shadow-md rounded-lg'>
-      <Table>
-        <TableHead className='bg-gray-100'>
-          <TableRow>
-            <TableCell className='font-bold text-gray-700'>
-              Reference Number
-            </TableCell>
-            <TableCell className='font-bold text-gray-700'>Status</TableCell>
-            <TableCell className='font-bold text-gray-700'>
-              Total Paid
-            </TableCell>
-            <TableCell className='font-bold text-gray-700'>Items</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {orders.map((order) => (
-            <TableRow
-              key={order.id}
-              className='hover:bg-gray-50 transition-colors duration-200'
-            >
-              <TableCell
-                className='text-gray-600'
-                sx={{
-                  width: "14%",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
+    <>
+      <div className='divide-y divide-gray-200'>
+        <OrdersList
+          orders={orders}
+          handleOpenViewDetails={handleOpenViewDetails}
+        />
+      </div>
+
+      <Modal
+        open={openViewDetails}
+        onClose={handleCloseViewDetails}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={viewOrderModalStyle}>
+          <div className='h-full overflow-auto'>
+            <div className='w-full flex justify-end'>
+              <button
+                onClick={handleCloseViewDetails}
+                className='cursor-pointer ml-auto bg-gray-200 hover:bg-gray-300 rounded-full p-2 text-gray-700'
               >
-                {order.referenceNumber}
-              </TableCell>
-              <TableCell className='text-gray-600'>
-                {order.orderStatus}
-              </TableCell>
-              <TableCell className='text-gray-600'>
-                ₱
-                {new Intl.NumberFormat("en-PH", {
-                  minimumFractionDigits: 2,
-                }).format(order.totalClientPaid)}
-              </TableCell>
-              <TableCell className='text-gray-600'>
-                {order.itemsOrdered.length}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                <MdOutlineClose size={20} />
+              </button>
+            </div>
+            <ViewOrderModal selectedOrder={selectedOrder} />
+          </div>
+        </Box>
+      </Modal>
+    </>
   );
 };
 

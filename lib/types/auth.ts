@@ -4,6 +4,7 @@ export interface Orders {
   orderStatus: string;
   totalClientPaid: number;
   itemsOrdered: string[];
+  createdAt: string;
 }
 
 export interface ClientUser {
@@ -17,4 +18,5 @@ export interface ClientUser {
   orders: Orders[];
   address?: string;
   city?: string;
+  createdAt: string;
 }

@@ -5,7 +5,7 @@ import { paragraph, title } from "@/lib/fonts/fonts";
 
 const Left = ({ register }: { register: UseFormRegister<SignUpFormType> }) => {
   return (
-    <div className='w-full xl:w-1/3 h-full flex flex-col'>
+    <div className='w-full xl:w-1/3 h-full flex flex-col justify-center'>
       <div className='flex flex-col gap-5'>
         <p className={`${title.className} text-xl`}>Create Your Account</p>
         <p className={`${paragraph.className} `}>

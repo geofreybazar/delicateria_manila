@@ -73,6 +73,7 @@ const SideCart = () => {
       quantity: item.quantity,
       price: item.productid.price,
       imgUrl: item.productid.images[0]?.url,
+      description: item.productid.description,
     }));
 
     try {
@@ -87,8 +88,8 @@ const SideCart = () => {
         localStorage.removeItem("cartId");
 
         Swal.fire({
-          title: "Cart Session Expired!",
-          text: "Your cart session has expired. Please try adding the items again.",
+          title: session.title,
+          text: session.message,
           icon: "info",
         }).then(() => {
           window.location.reload();

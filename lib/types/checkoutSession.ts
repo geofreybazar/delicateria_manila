@@ -8,26 +8,9 @@ export interface Items {
   imgUrl: string;
 }
 
-// interface Images {
-//   publicId: string;
-//   url: string;
-//   _id: string;
-// }
-
-// export interface Product {
-//   id: string;
-//   category: string;
-//   description: string;
-//   isOnsale: boolean;
-//   name: string;
-//   price: number;
-//   status: string;
-//   stockQuantity: number;
-//   images: Images[];
-// }
-
 interface CartStateItems {
   productid: string;
+  description: string;
   name: string;
   quantity: number;
   price: number;
@@ -60,6 +43,7 @@ export interface ReturnedCheckoutSession {
   status: string;
   isFreeDelivery: boolean;
   message?: string;
+  title?: string;
   itemsNoStock?: {
     availableStock: number;
     productName: string;

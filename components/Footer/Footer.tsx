@@ -1,3 +1,4 @@
+import Link from "next/link";
 import logo from "@/assets/HomePage/logo.png";
 import Image from "next/image";
 
@@ -36,26 +37,34 @@ const Footer = () => {
           <div className='w-full md:w-1/2 flex flex-col md:flex-row md:gap-5 gap-10'>
             <div className='w-1/2 flex flex-col gap-3'>
               <p className='font-semibold'>Resources</p>
-              <p>About Us</p>
-              <p>Contact Us</p>
+              <Link href={"/aboutus"}>
+                <p>About Us</p>
+              </Link>
+              <Link href={"/contactus"}>
+                <p>Contact Us</p>
+              </Link>
               <p>FAQs</p>
-              <p>Shipping Info</p>
-              <p>Returns Policy</p>
             </div>
             <div className='w-1/2 flex flex-col gap-3'>
               <p className='font-semibold'>Follow Us</p>
-              <p>Facebook</p>
-              <p>Instagram</p>
-              <p>X</p>
+              <a href='https://www.facebook.com/delicateriamanila'>
+                <p>Facebook</p>
+              </a>
+              <a href='https://www.instagram.com/delicateriamanila/'>
+                <p>Instagram</p>
+              </a>
+              {/* <p>X</p>
               <p>Linkedin</p>
-              <p>Youtube</p>
+              <p>Youtube</p> */}
             </div>
           </div>
         </div>
         <div className='flex flex-col md:flex-row justify-between border-t-2 py-5 gap-5'>
           <p>© 2025 Delicateria. All rights reserved.</p>
           <div className='flex flex-col md:flex-row gap-5'>
-            <p>Privacy Policy</p>
+            <Link href={"/dataprivacy"}>
+              <p>Privacy Policy</p>
+            </Link>
             <p>Terms of Service</p>
             <p>Cookie Settings</p>
           </div>

@@ -50,7 +50,7 @@ const SignupPage = () => {
 
   return (
     <form
-      className='w-full flex flex-col md:flex-row items-center justify-center gap-5'
+      className='h-full w-full flex flex-col md:flex-row items-center justify-center gap-5 p-6 xl:p-0'
       onSubmit={handleSubmit(onSubmit)}
     >
       <Left register={register} />

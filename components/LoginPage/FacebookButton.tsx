@@ -9,7 +9,7 @@ import { paragraph } from "@/lib/fonts/fonts";
 const FacebookButton = () => {
   return (
     <button
-      className={`${paragraph.className} bg-facebook py-2 px-5 rounded-full flex gap-3 justify-center items-center w-full`}
+      className={`${paragraph.className} cursor-pointer bg-facebook py-2 px-5 rounded-full flex gap-3 justify-center items-center w-full`}
       onClick={() => signIn("facebook")}
     >
       <Image

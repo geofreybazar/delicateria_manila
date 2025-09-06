@@ -25,8 +25,12 @@ export default function RootLayout({
       <AppRouterCacheProvider>
         <Providers>
           <ThemeProvider theme={theme}>
-            <Header />
-            {children}
+            <div className='h-screen flex flex-col'>
+              <Header />
+              <div className='flex-1  bg-gradient-to-b from-amber-50 to-amber-100'>
+                {children}
+              </div>
+            </div>
           </ThemeProvider>
         </Providers>
       </AppRouterCacheProvider>

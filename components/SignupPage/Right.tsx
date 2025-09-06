@@ -3,6 +3,7 @@ import { SignUpFormType } from "@/lib/validation/signupClientUserValidation";
 import { ImSpinner2 } from "react-icons/im";
 
 import { paragraph } from "@/lib/fonts/fonts";
+import { Button } from "@mui/material";
 
 const Right = ({
   register,
@@ -53,7 +54,9 @@ const Right = ({
           </small>
         </div>
       </div>
-      <button
+      <Button
+        variant='contained'
+        color='customorange'
         type='submit'
         disabled={isLoading}
         className={`${paragraph.className} border p-3 bg-mocha text-off-white rounded-full mt-2 flex items-center justify-center gap-2 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
@@ -64,7 +67,7 @@ const Right = ({
           </span>
         )}
         Create Account
-      </button>
+      </Button>
     </div>
   );
 };

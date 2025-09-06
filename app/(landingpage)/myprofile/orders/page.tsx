@@ -1,14 +1,16 @@
 import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
 import { GetClientUser } from "@/actions/clientUser";
 
 import OrdersTable from "@/components/Orders/OrdersTable";
-import { title } from "@/lib/fonts/fonts";
 
 const page = async () => {
   const session = await getServerSession();
   const email = session?.user.email;
 
-  if (!email) return <div>No Email Found</div>;
+  if (!email) {
+    redirect("/");
+  }
 
   const user = await GetClientUser(email);
 
@@ -17,8 +19,7 @@ const page = async () => {
   }
 
   return (
-    <div className='w-full p-6'>
-      <p className={`${title.className} text-xl pt-2 pb-5`}>Order History</p>
+    <div className='w-full shadow-md border border-gray-200 max-h-78 overflow-auto'>
       <OrdersTable orders={user.orders} />
     </div>
   );

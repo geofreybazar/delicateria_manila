@@ -33,7 +33,10 @@ const Form = ({ clientUser }: { clientUser: ClientUser }) => {
   }, [state]);
 
   return (
-    <form action={formAction} className='w-full flex justify-center'>
+    <form
+      action={formAction}
+      className='w-full flex justify-center p-4 shadow-sm border border-gray-200 rounded-md'
+    >
       <div
         className={`w-full flex flex-col md:flex-row gap-5 ${
           isPending ? "opacity-50" : ""

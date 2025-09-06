@@ -34,7 +34,7 @@ const CartItems: React.FC<CartItemsProps> = ({
       {cartItems.map((item) => (
         <div
           key={item._id}
-          className='grid grid-cols-2 sm:grid-cols-[120px_1fr_auto] gap-3 sm:gap-5 p-2 border-gray-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300'
+          className='grid grid-cols-2 sm:grid-cols-[120px_1fr_auto] gap-3 sm:gap-5 p-2 border-gray-300 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300'
         >
           <Image
             width={150}

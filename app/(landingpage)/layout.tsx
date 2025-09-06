@@ -3,7 +3,6 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/src/theme";
 import Providers from "../providers";
-import "../globals.css";
 
 import Navigation from "@/components/Navigation/Navigation";
 import Footer from "@/components/Footer/Footer";
